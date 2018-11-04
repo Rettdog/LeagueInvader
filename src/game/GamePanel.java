@@ -13,14 +13,15 @@ import javax.swing.Timer;
 
 public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	Timer timer;
-	//GameObject object;
-	int shipx=250;
-	int shipy=700;
-	RocketShip ship = new RocketShip(shipx,shipy,50,50);
-	ObjectManager manager = new ObjectManager(ship);
+	// GameObject object;
+	int shipx = 250;
+	int shipy = 700;
+	RocketShip ship;
+	
+	ObjectManager manager;
 	Font titleFont;
 	Font nontitle;
-	
+
 	final int MENU_STATE = 0;
 	final int GAME_STATE = 1;
 	final int END_STATE = 2;
@@ -28,9 +29,11 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
 	GamePanel() {
 		timer = new Timer(1000 / 60, this);
-		//object = new GameObject(10, 10, 100, 100);
-		titleFont=new Font("Arial",Font.PLAIN,48);
-		nontitle = new Font("Arial",Font.PLAIN,28);
+		// object = new GameObject(10, 10, 100, 100);
+		titleFont = new Font("Arial", Font.PLAIN, 48);
+		nontitle = new Font("Arial", Font.PLAIN, 28);
+		ship = new RocketShip(shipx, shipy, 50, 50);
+		manager = new ObjectManager(ship);
 	}
 
 	void startGame() {
@@ -45,7 +48,10 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
 	void updateGameState() {
 		currentState = GAME_STATE;
-manager.update();
+		manager.update();
+		manager.manageEnemies();
+		manager.purgeObjects();
+		manager.checkCollision();
 	}
 
 	void updateEndState() {
@@ -55,7 +61,7 @@ manager.update();
 
 	void drawMenuState(Graphics g) {
 		g.setFont(titleFont);
-		
+
 		g.setColor(Color.BLUE);
 		g.fillRect(0, 0, LeagueInvaders.width, LeagueInvaders.height);
 		g.setColor(Color.YELLOW);
@@ -66,21 +72,21 @@ manager.update();
 	}
 
 	void drawGameState(Graphics g) {
-		
+
 		g.setColor(Color.BLACK);
-		g.fillRect(0, 0, LeagueInvaders.width, LeagueInvaders.height); 
+		g.fillRect(0, 0, LeagueInvaders.width, LeagueInvaders.height);
 		manager.draw(g);
-		
+
 	}
 
 	void drawEndState(Graphics g) {
 		g.setFont(titleFont);
 		g.setColor(Color.RED);
-		g.fillRect(0, 0, LeagueInvaders.width, LeagueInvaders.height); 
+		g.fillRect(0, 0, LeagueInvaders.width, LeagueInvaders.height);
 		g.setColor(Color.BLACK);
 		g.drawString("GAME OVER", 90, 200);
 		g.setFont(nontitle);
-		g.drawString("You killed "+0+" enemies", 110, 300);
+		g.drawString("You killed " + 0 + " enemies", 110, 300);
 		g.drawString("Press ENTER to restart", 90, 400);
 	}
 
@@ -88,7 +94,7 @@ manager.update();
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		ship.update();
-		
+
 		repaint();
 		if (currentState == MENU_STATE) {
 
@@ -128,49 +134,69 @@ manager.update();
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
-		System.out.println(e.getKeyCode());
-		if(e.getKeyCode()==32) {
+		
+		if (e.getKeyCode() == 32) {
 			System.out.println("the");
 			manager.addProjectile(new Projectile(ship.x, ship.y, 10, 10));
-		}             
+		}
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if(e.getKeyCode()==32) {
-			System.out.println("the");
-			manager.addProjectile(new Projectile(ship.x+20, ship.y, 10, 10));
-		}
-		// TODO Auto-generated method stub
-		//System.out.println(e.getKeyCode());
-		if(e.getKeyCode()==10) {
-			System.out.println(e.getKeyCode());
-			currentState++;
-			
-			if(currentState > END_STATE){
-
-                currentState = MENU_STATE;
-
-			}
-		
-		}
+		System.out.println(e.getKeyChar());
 		if(e.getKeyCode()==39) {
-			ship.x+=ship.speed;
-		}
-		if(e.getKeyCode()==40) {
-			ship.y+=ship.speed;
+			ship.xSpeed=5;
+			System.out.println("hello");
 		}
 		if(e.getKeyCode()==37) {
-			ship.x-=ship.speed;
+			ship.xSpeed=-5;
+		}
+		if(e.getKeyCode()==40) {
+			ship.ySpeed=5;
 		}
 		if(e.getKeyCode()==38) {
-			ship.y-=ship.speed;
+			ship.ySpeed=-5;
 		}
+		
+		if (e.getKeyCode() == 32) {
+			System.out.println("the");
+			manager.addProjectile(new Projectile(ship.x + 20, ship.y, 10, 10));
+		}
+		// TODO Auto-generated method stub
+		// System.out.println(e.getKeyCode());
+		if (e.getKeyCode() == 10) {
+			System.out.println(e.getKeyCode());
+			currentState++;
+
+			if (currentState > END_STATE) {
+
+				currentState = MENU_STATE;
+
+			}
+			if(currentState==END_STATE) {
+				ship=new RocketShip(shipx, shipy, 50, 50);
+				manager=new ObjectManager(ship);
+			}
+
+		}
+		
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
-		//System.out.println("kid");
+		// System.out.println("kid");
+		if(e.getKeyCode()==39) {
+			ship.xSpeed=0;
+		}
+		if(e.getKeyCode()==37) {
+			ship.xSpeed=0;
+		}
+		if(e.getKeyCode()==40) {
+			ship.ySpeed=0;
+		}
+		if(e.getKeyCode()==38) {
+			ship.ySpeed=0;
+		}
 	}
 }

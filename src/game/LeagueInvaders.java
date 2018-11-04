@@ -1,4 +1,4 @@
-package game;
+   package game;
 
 import java.awt.Dimension;
 
@@ -8,6 +8,7 @@ public class LeagueInvaders {
 	static JFrame frame;
 	static final int width = 500;
 	static final int height = 800;
+	
 	
 	GamePanel superPanel;
 
