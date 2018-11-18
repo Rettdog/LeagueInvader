@@ -17,9 +17,11 @@ void update() {
 	void draw(Graphics g) {
 		g.setColor(Color.BLUE);
 
-        g.fillRect(x, y, width, height);
+        //g.fillRect(x, y, width, height);
         g.setColor(Color.YELLOW);
-        g.fillRect(x, y, width, height);
+        g.drawImage(GamePanel.alienImg, x, y, width, height, null);
+
+
 	}
 	int getY() {
 		return y;

@@ -7,7 +7,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -17,6 +20,17 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	int shipx = 250;
 	int shipy = 700;
 	RocketShip ship;
+	int score=0;
+	public static boolean egg = false;
+	public static BufferedImage alienImg;
+
+    public static BufferedImage rocketImg;
+
+    public static BufferedImage bulletImg;
+
+    public static BufferedImage spaceImg;
+
+
 	
 	ObjectManager manager;
 	Font titleFont;
@@ -34,6 +48,23 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		nontitle = new Font("Arial", Font.PLAIN, 28);
 		ship = new RocketShip(shipx, shipy, 50, 50);
 		manager = new ObjectManager(ship);
+        try {
+
+            alienImg = ImageIO.read(this.getClass().getResourceAsStream("alien.png"));
+
+            rocketImg = ImageIO.read(this.getClass().getResourceAsStream("rocket.png"));
+
+            bulletImg = ImageIO.read(this.getClass().getResourceAsStream("bullet.png"));
+
+            spaceImg = ImageIO.read(this.getClass().getResourceAsStream("space.png"));
+
+    } catch (IOException e) {
+
+            // TODO Auto-generated catch block
+
+            e.printStackTrace();
+
+    }
 	}
 
 	void startGame() {
@@ -63,7 +94,8 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		g.setFont(titleFont);
 
 		g.setColor(Color.BLUE);
-		g.fillRect(0, 0, LeagueInvaders.width, LeagueInvaders.height);
+		g.drawImage(GamePanel.spaceImg, 0, 0,  LeagueInvaders.width, LeagueInvaders.height, null);
+		//g.fillRect(0, 0, LeagueInvaders.width, LeagueInvaders.height);
 		g.setColor(Color.YELLOW);
 		g.drawString("League Invaders", 50, 200);
 		g.setFont(nontitle);
@@ -74,7 +106,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	void drawGameState(Graphics g) {
 
 		g.setColor(Color.BLACK);
-		g.fillRect(0, 0, LeagueInvaders.width, LeagueInvaders.height);
+		g.drawImage(GamePanel.spaceImg, 0, 0,  LeagueInvaders.width, LeagueInvaders.height, null);
 		manager.draw(g);
 
 	}
@@ -86,14 +118,21 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		g.setColor(Color.BLACK);
 		g.drawString("GAME OVER", 90, 200);
 		g.setFont(nontitle);
-		g.drawString("You killed " + 0 + " enemies", 110, 300);
+		g.drawString("You killed " + ship.score + " enemies", 110, 300);
 		g.drawString("Press ENTER to restart", 90, 400);
+		score=0;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		ship.update();
+		if(!ship.isAlive) {
+			ship.isAlive=true;
+			
+			updateEndState();
+			
+		}
 
 		repaint();
 		if (currentState == MENU_STATE) {
@@ -178,6 +217,9 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 				manager=new ObjectManager(ship);
 			}
 
+		}
+		if(e.getKeyCode()==45) {
+			egg=true;
 		}
 		
 	}

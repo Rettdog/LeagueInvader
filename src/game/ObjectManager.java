@@ -10,9 +10,11 @@ public class ObjectManager {
 	ArrayList<Projectile> list = new ArrayList<Projectile>();
 	ArrayList<Alien> aliens = new ArrayList<Alien>();
 	RocketShip shippy;
+	int score;
 
 	ObjectManager(RocketShip shipper) {
 		shippy = shipper;
+		score=0;
 
 	}
 
@@ -92,7 +94,11 @@ public class ObjectManager {
 	void checkCollision() {
 		for (Alien a : aliens) {
 			if (shippy.collisionBox.intersects(a.collisionBox)) {
+				System.out.println("Garrett is cool");
 				shippy.isAlive = false;
+				for (Alien b : aliens) {
+				b.isAlive=false;
+				}
 			}
 		}
 		//Separator
@@ -100,7 +106,8 @@ public class ObjectManager {
 			for (int j = 0; j < list.size(); j++) {
 				if(aliens.get(i).collisionBox.intersects(list.get(j).collisionBox)) {
 					aliens.get(i).isAlive=false;
-					list.get(i).isAlive=false;
+					list.get(j).isAlive=false;
+					score++;
 				}
 
 			}
