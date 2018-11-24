@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -20,18 +21,16 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	int shipx = 250;
 	int shipy = 700;
 	RocketShip ship;
-	int score=0;
+	int score = 0;
 	public static boolean egg = false;
 	public static BufferedImage alienImg;
 
-    public static BufferedImage rocketImg;
+	public static BufferedImage rocketImg;
 
-    public static BufferedImage bulletImg;
+	public static BufferedImage bulletImg;
 
-    public static BufferedImage spaceImg;
+	public static BufferedImage spaceImg;
 
-
-	
 	ObjectManager manager;
 	Font titleFont;
 	Font nontitle;
@@ -48,23 +47,23 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		nontitle = new Font("Arial", Font.PLAIN, 28);
 		ship = new RocketShip(shipx, shipy, 50, 50);
 		manager = new ObjectManager(ship);
-        try {
+		try {
 
-            alienImg = ImageIO.read(this.getClass().getResourceAsStream("alien.png"));
+			alienImg = ImageIO.read(this.getClass().getResourceAsStream("alien.png"));
 
-            rocketImg = ImageIO.read(this.getClass().getResourceAsStream("rocket.png"));
+			rocketImg = ImageIO.read(this.getClass().getResourceAsStream("rocket.png"));
 
-            bulletImg = ImageIO.read(this.getClass().getResourceAsStream("bullet.png"));
+			bulletImg = ImageIO.read(this.getClass().getResourceAsStream("bullet.png"));
 
-            spaceImg = ImageIO.read(this.getClass().getResourceAsStream("space.png"));
+			spaceImg = ImageIO.read(this.getClass().getResourceAsStream("space.png"));
 
-    } catch (IOException e) {
+		} catch (IOException e) {
 
-            // TODO Auto-generated catch block
+			// TODO Auto-generated catch block
 
-            e.printStackTrace();
+			e.printStackTrace();
 
-    }
+		}
 	}
 
 	void startGame() {
@@ -92,10 +91,10 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
 	void drawMenuState(Graphics g) {
 		g.setFont(titleFont);
-
+		ship.score = 0;
 		g.setColor(Color.BLUE);
-		g.drawImage(GamePanel.spaceImg, 0, 0,  LeagueInvaders.width, LeagueInvaders.height, null);
-		//g.fillRect(0, 0, LeagueInvaders.width, LeagueInvaders.height);
+		g.drawImage(GamePanel.spaceImg, 0, 0, LeagueInvaders.width, LeagueInvaders.height, null);
+		// g.fillRect(0, 0, LeagueInvaders.width, LeagueInvaders.height);
 		g.setColor(Color.YELLOW);
 		g.drawString("League Invaders", 50, 200);
 		g.setFont(nontitle);
@@ -106,7 +105,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	void drawGameState(Graphics g) {
 
 		g.setColor(Color.BLACK);
-		g.drawImage(GamePanel.spaceImg, 0, 0,  LeagueInvaders.width, LeagueInvaders.height, null);
+		g.drawImage(GamePanel.spaceImg, 0, 0, LeagueInvaders.width, LeagueInvaders.height, null);
 		manager.draw(g);
 
 	}
@@ -120,18 +119,18 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		g.setFont(nontitle);
 		g.drawString("You killed " + ship.score + " enemies", 110, 300);
 		g.drawString("Press ENTER to restart", 90, 400);
-		score=0;
+		// score = 0;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		ship.update();
-		if(!ship.isAlive) {
-			ship.isAlive=true;
-			
+		if (!ship.isAlive) {
+			ship.isAlive = true;
+
 			updateEndState();
-			
+
 		}
 
 		repaint();
@@ -173,38 +172,44 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
-		
+
 		if (e.getKeyCode() == 32) {
-			System.out.println("the");
+			// System.out.println("the");
 			manager.addProjectile(new Projectile(ship.x, ship.y, 10, 10));
 		}
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		System.out.println(e.getKeyChar());
-		if(e.getKeyCode()==39) {
-			ship.xSpeed=5;
-			System.out.println("hello");
+
+		if (e.getKeyCode() == 32 && currentState == MENU_STATE) {
+			JOptionPane.showMessageDialog(null,
+					"Use the arrow keys to move. Use the space bar to shoot. \n Don't let the aliens touch you or the Earth. \n You are our only hope. Good luck officer, and be \non the look out for the easter egg.");
 		}
-		if(e.getKeyCode()==37) {
-			ship.xSpeed=-5;
+
+		// System.out.println(e.getKeyChar());
+		if (e.getKeyCode() == 39) {
+			ship.xSpeed = 5;
+			// System.out.println("hello");
 		}
-		if(e.getKeyCode()==40) {
-			ship.ySpeed=5;
+		if (e.getKeyCode() == 37) {
+			ship.xSpeed = -5;
 		}
-		if(e.getKeyCode()==38) {
-			ship.ySpeed=-5;
+		if (e.getKeyCode() == 40) {
+			ship.ySpeed = 5;
 		}
-		
+		if (e.getKeyCode() == 38) {
+			ship.ySpeed = -5;
+		}
+
 		if (e.getKeyCode() == 32) {
-			System.out.println("the");
+			// System.out.println("the");
 			manager.addProjectile(new Projectile(ship.x + 20, ship.y, 10, 10));
 		}
 		// TODO Auto-generated method stub
 		// System.out.println(e.getKeyCode());
 		if (e.getKeyCode() == 10) {
-			System.out.println(e.getKeyCode());
+			// System.out.println(e.getKeyCode());
 			currentState++;
 
 			if (currentState > END_STATE) {
@@ -212,33 +217,36 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 				currentState = MENU_STATE;
 
 			}
-			if(currentState==END_STATE) {
-				ship=new RocketShip(shipx, shipy, 50, 50);
-				manager=new ObjectManager(ship);
+			if (currentState == END_STATE) {
+				ship = new RocketShip(shipx, shipy, 50, 50);
+				manager = new ObjectManager(ship);
+
 			}
 
 		}
-		if(e.getKeyCode()==45) {
-			egg=true;
+		if (e.getKeyCode() == 45) {
+			egg = true;
+			manager.enemySpawnTime = 500;
+			System.out.println("You have found the easter egg");
 		}
-		
+
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
 		// System.out.println("kid");
-		if(e.getKeyCode()==39) {
-			ship.xSpeed=0;
+		if (e.getKeyCode() == 39) {
+			ship.xSpeed = 0;
 		}
-		if(e.getKeyCode()==37) {
-			ship.xSpeed=0;
+		if (e.getKeyCode() == 37) {
+			ship.xSpeed = 0;
 		}
-		if(e.getKeyCode()==40) {
-			ship.ySpeed=0;
+		if (e.getKeyCode() == 40) {
+			ship.ySpeed = 0;
 		}
-		if(e.getKeyCode()==38) {
-			ship.ySpeed=0;
+		if (e.getKeyCode() == 38) {
+			ship.ySpeed = 0;
 		}
 	}
 }

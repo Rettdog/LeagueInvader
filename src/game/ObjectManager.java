@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class ObjectManager {
 	Long enemyTimer = (long) 0;
-	int enemySpawnTime = 1000;
+	public int enemySpawnTime = 1000;
 	ArrayList<Projectile> list = new ArrayList<Projectile>();
 	ArrayList<Alien> aliens = new ArrayList<Alien>();
 	RocketShip shippy;
@@ -14,7 +14,7 @@ public class ObjectManager {
 
 	ObjectManager(RocketShip shipper) {
 		shippy = shipper;
-		score=0;
+		score = 0;
 
 	}
 
@@ -56,7 +56,7 @@ public class ObjectManager {
 
 	public void manageEnemies() {
 		if (System.currentTimeMillis() - enemyTimer >= enemySpawnTime) {
-			addAlien(new Alien(new Random().nextInt(LeagueInvaders.width), 0, 50, 50));
+			addAlien(new Alien(new Random().nextInt(LeagueInvaders.width - 20), 0, 50, 50));
 
 			enemyTimer = System.currentTimeMillis();
 		}
@@ -81,8 +81,15 @@ public class ObjectManager {
 		for (int i = 0; i < aliens.size(); i++) {
 			if (!aliens.get(i).isAlive) {
 				aliens.remove(i);
-				//add to score
-				shippy.score++;
+				// add to score
+			} else if (aliens.get(i).y > 800) {
+				for (Alien b : aliens) {
+					b.isAlive = false;
+				}
+				for (Projectile c : list) {
+					c.isAlive = false;
+				}
+				shippy.isAlive = false;
 			}
 
 		}
@@ -94,26 +101,28 @@ public class ObjectManager {
 	void checkCollision() {
 		for (Alien a : aliens) {
 			if (shippy.collisionBox.intersects(a.collisionBox)) {
-				System.out.println("Garrett is cool");
+				// System.out.println("Garrett is cool");
 				shippy.isAlive = false;
+
 				for (Alien b : aliens) {
-				b.isAlive=false;
+					b.isAlive = false;
 				}
+
 			}
 		}
-		//Separator
+		// Separator
 		for (int i = 0; i < aliens.size(); i++) {
 			for (int j = 0; j < list.size(); j++) {
-				if(aliens.get(i).collisionBox.intersects(list.get(j).collisionBox)) {
-					aliens.get(i).isAlive=false;
-					list.get(j).isAlive=false;
-					score++;
+				if (aliens.get(i).collisionBox.intersects(list.get(j).collisionBox)) {
+					aliens.get(i).isAlive = false;
+					list.get(j).isAlive = false;
+					shippy.score++;
 				}
 
 			}
 
 		}
-		
+
 	}
 
 }
